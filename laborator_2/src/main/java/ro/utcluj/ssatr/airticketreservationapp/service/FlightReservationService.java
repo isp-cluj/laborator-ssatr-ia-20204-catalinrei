@@ -13,6 +13,7 @@ import ro.utcluj.ssatr.airticketreservationapp.model.User;
 public class FlightReservationService {
     private DBAccess connection;
     private FlightInformationTableModel flightInformationTableModel;
+    private FlightReservationTableModel flightReservationTableModel;
     private UsersTableModel userTableModel;
     private List<FlightInformation> list = new ArrayList<>();
 
@@ -28,6 +29,7 @@ public class FlightReservationService {
         }
 
         flightInformationTableModel  = new FlightInformationTableModel(connection);
+        flightReservationTableModel = new FlightReservationTableModel(connection);
         userTableModel = new UsersTableModel(connection);
     }
 
@@ -35,10 +37,14 @@ public class FlightReservationService {
         return flightInformationTableModel;
     }
 
+    public FlightReservationTableModel getFlightReservationTableModel() {
+        return flightReservationTableModel;
+    }
+
     public UsersTableModel getUserTableModel() {
         return userTableModel;
     }
-    
+
     public void addUser(User u){
        this.getUserTableModel().updateTable();
        connection.insertUser(u);
@@ -54,25 +60,46 @@ public class FlightReservationService {
         } catch (SQLException ex) {
             Logger.getLogger(FlightReservationService.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-    }
-    
 
-    public boolean makeReservation(String flightNumber, int noOfTikets ){
+    }
+
+
+//    public boolean makeReservation(String flightNumber, int noOfTikets, String userId ){
+//        try {
+//
+//            FlightReservation reservation = new FlightReservation(0,flightNumber,noOfTikets, userId);
+//            System.out.println("SERACH FLIGHT");
+//            FlightInformation f = connection.findFlight(flightNumber);
+//            System.out.println(f);
+//            if(f!=null){
+//                if(f.getNumberOfSeats()>=noOfTikets){
+//                    //........UPDATE ROW IN DATABASE
+//                    connection.makeReservation(reservation);
+//                    return true;
+//                }else{
+//                    System.out.println("Nomber of seats not available");
+//                }
+//            }else{
+//                System.out.println("No flight number found.");
+//            }
+//        } catch (SQLException ex) {
+//            Logger.getLogger(FlightReservationService.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return false;
+//
+//    }
+
+    public boolean makeReservation(String flightNumber, String userId ){
         try {
 
-            FlightReservation reservation = new FlightReservation(0,flightNumber,noOfTikets);
+            FlightReservation reservation = new FlightReservation(0,flightNumber,1, userId);
             System.out.println("SERACH FLIGHT");
             FlightInformation f = connection.findFlight(flightNumber);
             System.out.println(f);
             if(f!=null){
-                if(f.getNumberOfSeats()>=noOfTikets){
-                    //........UPDATE ROW IN DATABASE
-                    connection.makeReservation(reservation);
-                    return true;
-                }else{
+
                     System.out.println("Nomber of seats not available");
-                }
+
             }else{
                 System.out.println("No flight number found.");
             }
@@ -82,11 +109,11 @@ public class FlightReservationService {
         return false;
 
     }
-    
+
     public void cancelReservation(){
-        //TODO implement cancel reservation logic 
+        //TODO implement cancel reservation logic
     }
-    
+
     public String getAllFlights(){
         String s = "";
         for(FlightInformation fi: list){

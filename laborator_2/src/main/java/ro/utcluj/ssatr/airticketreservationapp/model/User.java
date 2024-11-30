@@ -4,6 +4,8 @@
  */
 package ro.utcluj.ssatr.airticketreservationapp.model;
 
+import java.util.Objects;
+
 /**
  *
  * @author mihai
@@ -24,6 +26,33 @@ public class User {
     public String getName() {
         return name;
     }
-    
-    
+
+    public void setUsedId(String usedId) {
+        this.usedId = usedId;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "usedId='" + usedId + '\'' +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(usedId, user.usedId) && Objects.equals(name, user.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(usedId, name);
+    }
 }

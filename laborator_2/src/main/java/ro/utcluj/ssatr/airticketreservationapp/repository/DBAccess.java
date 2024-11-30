@@ -25,7 +25,7 @@ public class DBAccess {
     public DBAccess() throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.cj.jdbc.Driver");
         //conectare la baza de date            
-        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/flights", "root", "root");
+        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/flights2", "root", "root");
     }
 
     public void insertFlight(FlightInformation f) throws SQLException {
@@ -75,6 +75,19 @@ public class DBAccess {
         }
 
     }
+
+    public List<FlightReservation> findAllReservations() throws SQLException {
+        try ( Statement s = connection.createStatement()) {
+            ArrayList<FlightReservation> list = new ArrayList<>();
+
+            ResultSet rs = s.executeQuery("SELECT * FROM RESERVATIONS");
+            while (rs.next()) {
+                list.add(new FlightReservation(rs.getInt("IDRESERVATIONS"), rs.getString("FLIGHTNUMBER"), rs.getInt("NOOFTICKETS"), rs.getString("USERID")));
+            }
+            return list;
+        }
+
+    }
     
      public List<User> findAllUsers() throws SQLException {
         try ( Statement s = connection.createStatement()) {
@@ -82,7 +95,7 @@ public class DBAccess {
 
             ResultSet rs = s.executeQuery("SELECT * FROM USERS");
             while (rs.next()) {
-                list.add(new User(rs.getString("IDUSERS"), rs.getString("NAME")));
+                list.add(new User(rs.getString("USEDID"), rs.getString("NAME")));
             }
             return list;
         }
@@ -153,13 +166,13 @@ public class DBAccess {
 
     }
     
-//    public void insertUser(String userId, String userName){
-//        try ( Statement s = connection.createStatement()) {
-//            s.executeUpdate("INSERT INTO USERS(IDUSERS, NAME) VALUES('" + userId + "','" + userName + "')");
-//        } catch (SQLException ex) {
-//            Logger.getLogger(DBAccess.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
+    public void insertUser(String userId, String userName){
+        try ( Statement s = connection.createStatement()) {
+            s.executeUpdate("INSERT INTO USERS(USEDID, NAME) VALUES('" + userId + "','" + userName + "')");
+        } catch (SQLException ex) {
+            Logger.getLogger(DBAccess.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     public void cancelReservation(int reservationId) {
 
@@ -173,7 +186,7 @@ public class DBAccess {
 
     public void insertUser(User u) {
         try ( Statement s = connection.createStatement()) {
-            s.executeUpdate("INSERT INTO USERS(IDUSERS, NAME) VALUES('" + u.getUsedId() + "','" + u.getName() + "')");
+            s.executeUpdate("INSERT INTO USERS(USEDID, NAME) VALUES('" + u.getUsedId() + "','" + u.getName() + "')");
         } catch (SQLException ex) {
             Logger.getLogger(DBAccess.class.getName()).log(Level.SEVERE, null, ex);
         } 
